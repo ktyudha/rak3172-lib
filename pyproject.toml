@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rak3172"
+version = "0.2.0"
+description = "Python driver for RAK3172 (AT firmware): LoRa P2P and LoRaWAN, gateway/node roles, for Raspberry Pi"
+readme = "Readme.md"
+requires-python = ">=3.8"
+dependencies = ["pyserial", "python-dotenv"]
+
+[project.scripts]
+rak3172 = "rak3172.cli.main:main"
+
+[tool.setuptools]
+packages = {find = {include = ["rak3172*"]}}
