@@ -88,3 +88,13 @@ Alice <--pong #N-- Bob          reply after 100ms with RSSI
 ---
 
 Lihat [README_DETAILED.md](README_DETAILED.md) untuk setup lengkap, troubleshooting, tweak, dan analisis data.
+
+---
+
+## Alternative: ESP32 Alice
+
+Jika Alice gunakan **ESP32 + RFM95** (bukan RAK3172):
+- Payload format tetap sama (`<seq>;<rssi>`)
+- Frame header tetap sama (`[from][to][payload]`)
+- Bob & Eve tidak perlu berubah
+- Lihat [CROSS_PLATFORM.md](CROSS_PLATFORM.md) untuk wiring, config, debugging
