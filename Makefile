@@ -14,15 +14,28 @@ RAK := $(BIN)/rak3172
 .PHONY: help
 help:
 	@echo "Available commands:"
+	@echo ""
+	@echo "Setup:"
 	@echo "  make install   Create virtualenv & install the package (editable)"
 	@echo "  make env       Create .env from .env.example (if missing), then edit it"
 	@echo "  make init      Check .env and configure the module with it (do this once)"
+	@echo ""
+	@echo "LoRa modes:"
 	@echo "  make run       Start what .env says (LORA_MODE / LORA_ROLE)"
 	@echo "  make ports     List serial ports"
 	@echo "  make gateway   Run P2P gateway   (settings from .env)"
 	@echo "  make node      Run P2P node      (MESSAGE=hello INTERVAL=10)"
 	@echo "  make otaa      Run LoRaWAN OTAA node (keys from .env)"
 	@echo "  make abp       Run LoRaWAN ABP node  (keys from .env)"
+	@echo ""
+	@echo "Research experiments (Alice/Bob/Eve):"
+	@echo "  make bob       Run Bob (gateway) - LORA_ADDRESS=1"
+	@echo "  make alice     Run Alice (node) - LORA_ADDRESS=2"
+	@echo "  make eve       Run Eve (listener) - LORA_ADDRESS=3"
+	@echo "  make bob-csv CSV_FILE=path   Run Bob with custom CSV output"
+	@echo "  make alice-csv CSV_FILE=path Run Alice with custom CSV output"
+	@echo ""
+	@echo "Maintenance:"
 	@echo "  make freeze    Update requirements.txt"
 	@echo "  make clean     Remove virtual environment"
 
@@ -74,3 +87,29 @@ freeze:
 .PHONY: clean
 clean:
 	rm -rf $(VENV) *.egg-info
+
+# Research experiments: Alice, Bob, Eve
+.PHONY: bob
+bob:
+	@test -f .env || (echo "Error: .env not found. Run: make env" && exit 1)
+	LORA_ADDRESS=1 $(PYTHON_VENV) features/bob.py
+
+.PHONY: alice
+alice:
+	@test -f .env || (echo "Error: .env not found. Run: make env" && exit 1)
+	LORA_ADDRESS=2 LORA_GATEWAY_ADDRESS=1 $(PYTHON_VENV) features/alice.py
+
+.PHONY: eve
+eve:
+	@test -f .env || (echo "Error: .env not found. Run: make env" && exit 1)
+	LORA_ADDRESS=3 $(PYTHON_VENV) features/eve.py
+
+.PHONY: bob-csv
+bob-csv:
+	@test -f .env || (echo "Error: .env not found. Run: make env" && exit 1)
+	LORA_ADDRESS=1 CSV_FILE=$(CSV_FILE) $(PYTHON_VENV) features/bob.py
+
+.PHONY: alice-csv
+alice-csv:
+	@test -f .env || (echo "Error: .env not found. Run: make env" && exit 1)
+	LORA_ADDRESS=2 LORA_GATEWAY_ADDRESS=1 CSV_FILE=$(CSV_FILE) $(PYTHON_VENV) features/alice.py
